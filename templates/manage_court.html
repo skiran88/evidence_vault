@@ -1,0 +1,168 @@
+{% include 'admin_dashboard.html' %}
+
+<style>
+.page-wrapper {
+  margin-left: 280px;
+  padding: 25px;
+}
+
+@media (max-width: 992px) {
+  .page-wrapper {
+    margin-left: 0;
+    padding: 15px;
+  }
+}
+
+.page-title {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.page-subtitle {
+  color: #64748b;
+  margin-bottom: 22px;
+}
+
+.custom-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+.form-control {
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.btn-auth {
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 700;
+  background: #38bdf8;
+  border: 0;
+}
+
+.btn-auth:hover {
+  background: #0ea5e9;
+}
+
+.table thead th {
+  background: #f3f6ff;
+}
+
+.action-btn {
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+</style>
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">Manage Courts</h2>
+  <p class="page-subtitle">Admin can add and manage courts</p>
+
+  <!-- Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="row g-4">
+
+    <!-- FORM -->
+    <div class="col-lg-5">
+      <div class="custom-card">
+
+        <h5 class="fw-bold mb-3">Add Court</h5>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <input type="text" name="username" class="form-control mb-2" placeholder="Username" required>
+          <input type="password" name="password" class="form-control mb-2" placeholder="Password" required>
+          <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+          <input type="text" name="court_name" class="form-control mb-2" placeholder="Court Name" required>
+
+          <input type="text" name="location" class="form-control mb-2" placeholder="Location" required>
+
+          <select name="court_type" class="form-control mb-3">
+            <option value="">Court Type</option>
+            <option value="district">District Court</option>
+            <option value="high">High Court</option>
+            <option value="supreme">Supreme Court</option>
+            <option value="family">Family Court</option>
+            <option value="consumer">Consumer Court</option>
+          </select>
+
+          <button type="submit" class="btn btn-auth w-100 text-white">
+            Add Court
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="col-lg-7">
+      <div class="custom-card">
+
+        <h5 class="fw-bold mb-3">Court List</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Court</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+            {% for court in courts %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ court.court_name }}</td>
+                <td>{{ court.location }}</td>
+
+                <td>
+                  {% if court.court_type == "district" %}District Court
+                  {% elif court.court_type == "high" %}High Court
+                  {% elif court.court_type == "supreme" %}Supreme Court
+                  {% elif court.court_type == "family" %}Family Court
+                  {% elif court.court_type == "consumer" %}Consumer Court
+                  {% else %}-{% endif %}
+                </td>
+
+                <td>
+                  <a href="{% url 'delete_court' court.id %}"
+                     class="btn btn-danger btn-sm action-btn"
+                     onclick="return confirm('Delete this court?')">
+                     Delete
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">
+                  No courts available
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

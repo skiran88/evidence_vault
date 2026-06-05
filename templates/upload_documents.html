@@ -1,0 +1,195 @@
+{% include 'advocate_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 30px;
+  }
+
+  .premium-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    border: none;
+    overflow: hidden;
+  }
+
+  .card-header-gradient {
+    background: linear-gradient(135deg, #37517e, #47b2e4);
+    color: white;
+    padding: 20px 25px;
+  }
+
+  .form-control, .form-select {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #e0e6ed;
+    font-size: 14px;
+  }
+
+  .form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 4px rgba(55, 81, 126, 0.1);
+    border-color: #37517e;
+  }
+
+  .btn-upload {
+    background: #37517e;
+    color: white;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    transition: 0.3s;
+    border: none;
+  }
+
+  .btn-upload:hover {
+    background: #2b3f63;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  .evidence-table th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+
+  .hash-text {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #475569;
+  }
+
+  .ver-badge {
+    background: #def7ec;
+    color: #03543f;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+</style>
+
+<div class="page-wrapper">
+  <div class="container-fluid">
+    
+    <div class="mb-4">
+      <h3 class="fw-bold text-dark mb-1">Digital Evidence Vault</h3>
+      <p class="text-muted">Securely upload and register case evidence on the blockchain.</p>
+    </div>
+
+    <!-- Message Alerts -->
+    <!--{% if messages %}-->
+      <!--{% for message in messages %}-->
+        <!--<div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">-->
+          <!--<i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %} me-2"></i>-->
+          <!--{{ message }}-->
+          <!--<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+        <!--</div>-->
+      <!--{% endfor %}-->
+    <!--{% endif %}-->
+
+    <div class="row g-4">
+      
+      <!-- Upload Form -->
+      <div class="col-lg-4">
+        <div class="premium-card">
+          <div class="card-header-gradient">
+            <h5 class="mb-0"><i class="bi bi-file-earmark-arrow-up me-2"></i> New Evidence</h5>
+          </div>
+          <div class="card-body p-4">
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold">SELECT ACTIVE CASE</label>
+                <select name="case_id" class="form-select" required>
+                  <option value="" disabled selected>Choose a case...</option>
+                  {% for case in cases %}
+                    <option value="{{ case.id }}">CASE #{{ case.id }}: {{ case.case_title }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-secondary small fw-bold">EVIDENCE FILE</label>
+                <input type="file" name="evidence_file" class="form-control" required>
+                <div class="form-text small">Accepted: PDF, JPG, PNG, DOCX</div>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label text-secondary small fw-bold">DOCUMENT DESCRIPTION</label>
+                <textarea name="description" class="form-control" rows="4" placeholder="Briefly describe what this evidence proves..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-upload w-100">
+                <i class="bi bi-shield-lock-fill me-2"></i> Secure on Blockchain
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evidence History -->
+      <div class="col-lg-8">
+        <div class="premium-card h-100">
+          <div class="p-4 border-bottom bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-clock-history me-2"></i> Your Evidence History</h5>
+            <span class="badge bg-soft-primary text-primary">{{ evidence_history|length }} Total</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table evidence-table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th class="ps-4">Case / Document</th>
+                    <th>Blockchain Identity</th>
+                    <th>Uploaded At</th>
+                    <th class="pe-4">Document</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in evidence_history %}
+                  <tr>
+                    <td class="ps-4">
+                      <div class="fw-bold text-dark">CASE #{{ item.case.id }}</div>
+                      <div class="text-muted small">{{ item.description|truncatechars:35 }}</div>
+                    </td>
+                    <td>
+                      <div><span class="ver-badge"><i class="bi bi-patch-check-fill me-1"></i> VERIFIED</span></div>
+                      <div class="mt-1"><span class="hash-text">{{ item.evidence_hash|slice:":12" }}...</span></div>
+                    </td>
+                    <td class="text-muted small">
+                      {{ item.uploaded_at|date:"M d, Y" }} <br> {{ item.uploaded_at|time:"H:i" }}
+                    </td>
+                    <td class="pe-4">
+                      <a href="{{ item.evidence_file.url }}" target="_blank" class="btn btn-light btn-sm rounded-circle shadow-sm">
+                        <i class="bi bi-download"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                      <i class="bi bi-folder-x d-block mb-2" style="font-size: 30px;"></i>
+                      No evidence records found in this vault.
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

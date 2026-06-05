@@ -1,0 +1,143 @@
+{% include 'advocate_dashboard.html' %}
+
+<style>
+
+.page-wrapper{
+    margin-left:280px;
+    padding:30px;
+}
+
+/* ✅ Center content properly */
+.page-title,
+.page-subtitle,
+.case-card{
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.page-title{
+    font-weight:700;
+    color:#2c3e50;
+    margin-bottom:5px;
+}
+
+.page-subtitle{
+    color:#6c757d;
+    margin-bottom:25px;
+}
+
+.case-card{
+    background:white;
+    border-radius:14px;
+    padding:25px;
+    box-shadow:0 6px 25px rgba(0,0,0,0.08);
+}
+
+.table thead th{
+    background:#37517e;
+    color:white;
+    font-weight:600;
+}
+
+</style>
+
+
+<div class="page-wrapper">
+
+<h3 class="page-title">Responded Cases</h3>
+
+<p class="page-subtitle">
+Review legal case requests submitted by users.
+</p>
+
+<div class="case-card">
+<div id="respondtable">
+
+</div>
+
+<div class="table-responsive">
+
+<table class="table table-bordered align-middle">
+
+<thead>
+<tr>
+<th>Case ID</th>
+<th>Case Title</th>
+<th>Description</th>
+<th>Court Location</th>
+<th>Evidence</th>
+<th>Status</th>
+<th>Assign Court</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for case in cases %}
+<tr>
+
+<td>{{ forloop.counter }}</td>
+
+<td>{{ case.case_title }}</td>
+
+<td>{{ case.description }}</td>
+
+<td>{{ case.court_location }}</td>
+
+<td>
+{% if case.evidence_file %}
+<a href="{{ case.evidence_file.url }}" target="_blank" class="btn btn-info btn-sm">
+    View Evidence
+</a>
+{% else %}
+<span class="text-muted">No File</span>
+{% endif %}
+</td>
+
+<td>
+    {% if case.status == "Case Assigned To Court" %}
+        <span class="badge bg-success">Assigned</span>
+    {% else %}
+        <span class="badge bg-warning text-dark">Approved</span>
+    {% endif %}
+</td>
+
+<td>
+    {% if case.status == "Case Assigned To Court" %}
+        <div class="text-success fw-bold">
+            <i class="bi bi-check-circle-fill"></i> {{ case.court.court_name }}
+        </div>
+    {% else %}
+        <form method="POST" action="{% url 'assign_to_court' case.id %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <select name="court_id" class="form-select form-select-sm" required>
+                    <option value="">Choose Court</option>
+                    {% for court in courts %}
+                    <option value="{{ court.id }}">{{ court.court_name }} ({{ court.location }})</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+            </div>
+        </form>
+    {% endif %}
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+window.onload = function() {
+    document.getElementById("respondtable").scrollIntoView({ behavior: "smooth" });
+};
+</script>

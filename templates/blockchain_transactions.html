@@ -1,0 +1,130 @@
+{% include 'admin_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .hash {
+    font-family: monospace;
+    font-size: 13px;
+    word-break: break-all;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 8px;
+  }
+
+  .verified {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .pending {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+</style>
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">Blockchain Transactions</h2>
+  <p class="page-subtitle">
+    Monitor blockchain records for uploaded evidence to ensure tamper-proof verification.
+  </p>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="custom-card bg-primary text-white">
+        <h6 class="fw-bold mb-1"><i class="bi bi-cpu me-2"></i>Current Network Block</h6>
+        <div class="h2 fw-bold mb-0 text-white">{{ current_block|default:"0" }}</div>
+        <small class="opacity-75">Live block height from Ganache</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-card">
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Case ID</th>
+            <th>User</th>
+            <th>Evidence File</th>
+            <th>Blockchain Hash</th>
+            <th>Timestamp</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for case in cases %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>CASE{{ case.id }}</td>
+            <td>{% if case.user %}{{ case.user.get_full_name|default:case.user.username }}{% else %}Unknown User{% endif %}</td>
+            <td>{{ case.evidence_file.name|cut:"evidence/" }}</td>
+            <td class="hash">
+              {{ case.blockchain_txn_hash|default:"N/A" }}
+            </td>
+            <td>{{ case.created_at|date:"d M Y h:i A" }}</td>
+            <td>
+              {% if case.blockchain_txn_hash %}
+                <span class="status-badge verified">Verified</span>
+              {% else %}
+                <span class="status-badge pending">Pending</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center">No blockchain transactions found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <small class="text-muted">
+      * Each evidence upload is stored as a blockchain transaction to prevent tampering.
+    </small>
+
+  </div>
+
+</div>

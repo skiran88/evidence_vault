@@ -1,0 +1,160 @@
+{% include 'admin_dashboard.html' %}
+
+<style>
+  /* Make sure content area doesn't break sidebar layout */
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    height: 100%;
+  }
+
+  .form-control {
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e6e9f2;
+    box-shadow: none;
+  }
+
+  .form-control:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 0.18rem rgba(56, 189, 248, 0.2);
+  }
+
+  .btn-auth {
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 700;
+    background: #38bdf8;
+    border: 0;
+  }
+
+  .btn-auth:hover {
+    background: #0ea5e9;
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .action-btn {
+    border-radius: 10px;
+    font-weight: 650;
+    padding: 6px 10px;
+  }
+</style>
+
+<!-- ✅ Content inside admin layout -->
+<div class="page-wrapper">
+
+  <h2 class="page-title">Advocate Categories</h2>
+  <p class="page-subtitle">
+    Admin can add and manage advocate categories for proper classification (Criminal, Civil, Cyber Crime, etc).
+  </p>
+
+  <div class="row g-4">
+
+    <!-- ✅ Add Category Form -->
+    <div class="col-lg-5">
+      <div class="custom-card">
+        <h5 class="fw-bold mb-3">Add New Category</h5>
+
+        <form method="post" action="">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Category Name</label>
+            <input type="text" name="category_name" class="form-control" placeholder="Eg: Criminal Lawyer" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Description (Optional)</label>
+            <textarea name="description" class="form-control" rows="3"
+              placeholder="Short details about this category"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-auth w-100 text-white">
+            Add Category
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ✅ Categories Table -->
+    <div class="col-lg-7">
+      <div class="custom-card">
+
+        <h5 class="fw-bold mb-3">Category List</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+            {% for category in categories %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ category.category_name }}</td>
+                <td>{{ category.description }}</td>
+
+
+                <td>
+                  <a href="{% url 'delete_category' category.id %}"
+                     class="btn btn-danger btn-sm action-btn"
+                     onclick="return confirm('Delete this category?')">
+                    Delete
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">
+                  No courts available
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

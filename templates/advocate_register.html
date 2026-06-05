@@ -1,0 +1,283 @@
+{% include 'publicheader.html' %}
+
+<style>
+  /* same spacing because header is fixed */
+  .auth-hero {
+    min-height: 100vh;
+    padding: 140px 0 80px;
+    background: #37517e; /* Arsha hero blue */
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* light overlay like home */
+  .auth-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 30, 60, 0.2), rgba(0, 0, 0, 0.25));
+    z-index: 1;
+  }
+
+  /* subtle shapes like the theme */
+  .auth-shape {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.25;
+    z-index: 1;
+  }
+
+  .auth-shape.one {
+    top: -140px;
+    left: -140px;
+    background: #47b2e4;
+  }
+
+  .auth-shape.two {
+    bottom: -180px;
+    right: -150px;
+    background: #ffffff;
+  }
+
+  .auth-wrap {
+    position: relative;
+    z-index: 2;
+  }
+
+  .auth-title {
+    color: #fff;
+    font-weight: 800;
+    font-size: 38px;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  .auth-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    max-width: 520px;
+  }
+
+  .auth-card {
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 45px rgba(0, 0, 0, 0.25);
+  }
+
+  .auth-card-inner {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+  }
+
+  .auth-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .auth-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(71, 178, 228, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #47b2e4;
+    font-size: 18px;
+  }
+
+  .auth-card-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    color: #2c3e50;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+  }
+
+  .form-control {
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e6e9f2;
+    box-shadow: none;
+  }
+
+  .form-control:focus {
+    border-color: #47b2e4;
+    box-shadow: 0 0 0 0.18rem rgba(71, 178, 228, 0.18);
+  }
+
+  .btn-auth {
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 700;
+    background: #47b2e4;
+    border: 0;
+  }
+
+  .btn-auth:hover {
+    background: #2fa6db;
+  }
+
+  .auth-note {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .auth-note a {
+    color: #47b2e4;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .auth-note a:hover {
+    text-decoration: underline;
+  }
+
+  /* responsive */
+  @media (max-width: 991px) {
+    .auth-title {
+      font-size: 30px;
+    }
+    .auth-card-inner {
+      padding: 26px;
+    }
+  }
+</style>
+
+<main class="main">
+  <section class="auth-hero">
+
+    <div class="auth-shape one"></div>
+    <div class="auth-shape two"></div>
+
+    <div class="container auth-wrap" data-aos="fade-up">
+      <div class="row align-items-center gy-4">
+
+        <!-- LEFT TEXT -->
+        <div class="col-lg-6">
+          <h1 class="auth-title">Advocate Registration</h1>
+          <p class="auth-subtitle">
+            Register as an <b>Advocate</b> in EvidenceVault to manage cases securely and help clients
+            with tamper-proof blockchain evidence.
+          </p>
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="col-lg-5 offset-lg-1">
+          <div class="auth-card p-3">
+            <div class="auth-card-inner">
+
+              <div class="auth-card-head">
+                <div class="auth-badge">
+                  <i class="bi bi-person-badge"></i>
+                </div>
+                <div>
+                  <h3 class="auth-card-title">Advocate Register</h3>
+                  <small class="text-muted">Fill in your details to continue</small>
+                </div>
+              </div>
+
+              <form method="post" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">first_name</label>
+                    <input type="text" name="first_name" class="form-control" placeholder="Enter first_name" required>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">last_name</label>
+                    <input type="text" name="last_name" class="form-control" placeholder="Enter last_name">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Enter phone number" required>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Category</label>
+                      <select name="category_name" class="form-control" required>
+                      <option value="">Select Category</option>
+
+                      {% for category in categories %}
+                        <option value="{{ category.id }}">
+                          {{ category.category_name }}
+                        </option>
+                      {% endfor %}
+
+                      </select>
+                    </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Experience Years</label>
+                    <input type="number" name="experience" class="form-control" placeholder="Eg: 5" min="0" required>
+                  </div>
+                </div>
+
+
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Proof Document</label>
+                  <input type="file" name="proof" class="form-control" required>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Create password" required>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-auth w-100 text-white">
+                  Register Now
+                </button>
+
+              </form>
+
+            </div>
+          </div>
+
+          <p class="auth-note">
+            Already have an account?
+            <a href="{% url 'login' %}">Login here</a>
+          </p>
+
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+</main>
+
+{% include 'publicfooter.html' %}

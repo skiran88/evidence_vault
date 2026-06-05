@@ -1,0 +1,198 @@
+{% include 'court_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .hash {
+    font-family: monospace;
+    font-size: 11px;
+    word-break: break-all;
+    color: #475569;
+  }
+
+  .status-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .verified {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+
+  .form-control-sm, .form-select-sm {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .btn-schedule {
+    background: #37517e;
+    color: white;
+    border: none;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  .btn-schedule:hover {
+    background: #2a3d5f;
+    color: white;
+  }
+</style>
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">Hearing Schedule</h2>
+  <p class="page-subtitle">
+    Set hearing dates and update the final status for blockchain-verified cases.
+  </p>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="custom-card">
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Case Details</th>
+            <th>Evidence Hash</th>
+            <th style="width: 350px;">Schedule Hearing & Update Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for case in cases %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <div class="mb-1">
+                <strong>CASE{{ case.id }}: {{ case.case_title }}</strong>
+              </div>
+              <div class="text-muted small">
+                <i class="bi bi-tag-fill me-1"></i> {{ case.category.category_name }} | 
+                <span class="badge bg-info text-dark" style="font-size: 10px;">{{ case.status }}</span>
+              </div>
+              
+              {% with hearing=case.courthearing_set.last %}
+                {% if hearing %}
+                  <div class="mt-2 p-2 rounded bg-light border-start border-4 border-primary">
+                    <div class="fw-bold small text-primary">Last Scheduled Hearing:</div>
+                    <div class="small">Date: {{ hearing.hearing_date|date:"d M Y" }}</div>
+                  </div>
+                {% endif %}
+              {% endwith %}
+            </td>
+            <td class="hash">
+              {% if case.blockchain_txn_hash %}
+                <span class="status-badge verified d-inline-block mb-1">
+                  <i class="bi bi-shield-check me-1"></i> Secured
+                </span><br>
+                {{ case.blockchain_txn_hash|truncatechars:35 }}
+              {% else %}
+                <span class="badge bg-warning text-dark mb-1 d-inline-block">
+                   <i class="bi bi-hourglass-split me-1"></i> Pending Seal
+                </span><br>
+                <small class="text-muted">No blockchain record</small>
+              {% endif %}
+            </td>
+            <td>
+              <form method="POST" action="{% url 'update_hearing_schedule' %}" class="bg-light p-3 rounded border">
+                {% csrf_token %}
+                <input type="hidden" name="case_id" value="{{ case.id }}">
+                
+                <div class="row g-2">
+                  <div class="col-md-6">
+                    <label class="form-label">Hearing Date</label>
+                    <input type="date" name="hearing_date" class="form-control form-control-sm" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">New Status</label>
+                    <select name="status" class="form-select form-select-sm" required>
+                      <option value="Court Accepted">Court Accepted</option>
+                      <option value="Under Trial">Under Trial</option>
+                      <option value="Awaiting Verdict">Awaiting Verdict</option>
+                      <option value="Case Disposed">Case Disposed</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Verdict (Optional)</label>
+                    <input type="text" name="verdict" class="form-control form-control-sm" placeholder="Enter verdict if any">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Notes (Optional)</label>
+                    <input type="text" name="notes" class="form-control form-control-sm" placeholder="Any hearing notes">
+                  </div>
+                  <div class="col-12 mt-2">
+                    <button type="submit" class="btn btn-schedule btn-sm w-100">
+                       Update Schedule & Status
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-5">
+              <i class="bi bi-calendar-x text-muted" style="font-size: 40px;"></i>
+              <p class="mt-2 text-muted">No accepted cases waiting for schedule.</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EvidenceVault | Admin Panel</title>
+
+  <!-- Bootstrap + Icons -->
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+
+body {
+  background: #f5f7fb;
+  font-family: "Open Sans", sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background: linear-gradient(180deg,#37517e,#1f2d4b);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 25px 18px;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+}
+
+.sidebar h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 35px;
+  color: #ffffff;
+  text-align: center;
+  font-family: "Jost", sans-serif;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  color: #dce6f5;
+  text-decoration: none;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+  color: #fff;
+}
+
+.sidebar a.active {
+  background: #47b2e4;
+  color: white;
+}
+
+.sidebar i {
+  font-size: 18px;
+}
+
+/* Main content */
+.main-content {
+  margin-left: 280px;
+  padding: 30px;
+}
+
+/* Topbar */
+.topbar {
+  background: white;
+  padding: 18px 25px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 25px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.topbar h3 {
+  margin: 0;
+  font-weight: 700;
+  font-family: "Jost", sans-serif;
+  color: #37517e;
+}
+
+.admin-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+/* Card Box */
+.card-box {
+  background: white;
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0px 5px 25px rgba(0,0,0,0.08);
+}
+
+.card-box h4 {
+  font-family: "Jost", sans-serif;
+  color: #37517e;
+}
+
+/* Dashboard Cards */
+.bg-light {
+  background: #f8fbff !important;
+  border: 1px solid #e6eef9;
+  transition: 0.3s;
+}
+
+.bg-light:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.08);
+}
+
+/* Divider */
+.sidebar hr {
+  border: 1px solid rgba(255,255,255,0.2);
+  margin: 20px 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+
+.sidebar {
+  width: 100%;
+  min-height: auto;
+  position: relative;
+}
+
+.main-content {
+  margin-left: 0;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+  <!-- ✅ Sidebar Navigation -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+
+    <a href="#" class="active">
+      <i class="bi bi-speedometer2"></i>
+      Dashboard
+    </a>
+
+    <a href="{% url 'add_categories' %}">
+      <i class="bi bi-tags"></i>
+      Add Advocate Categories
+    </a>
+
+
+    <a href="{% url 'manage_court' %}">
+      <i class="bi bi-bank2"></i>
+      Add / Manage Courts
+    </a>
+
+    <a href="{% url 'approve_advocates' %}">
+      <i class="bi bi-person-check"></i>
+      Approve / Reject Advocates
+    </>
+
+    <a href="/blockchain_transactions">
+      <i class="bi bi-diagram-3"></i>
+      Monitor Blockchain Transactions
+    </a>
+
+    <a href="/view_users_accounts">
+      <i class="bi bi-people"></i>
+      View User & Advocate Accounts
+    </a>
+
+    <a href="/view_complaints">
+      <i class="bi bi-chat-left-text"></i>
+      View Complaints & Reply
+    </a>
+
+    <a href="/view_feedbacks">
+      <i class="bi bi-star-half"></i>
+      View Feedbacks
+    </a>
+
+    <hr style="border: 1px solid rgba(255,255,255,0.15);" />
+
+    <a  href="{% url 'home' %}">
+      <i class="bi bi-box-arrow-right"></i>
+      Logout
+    </a>
+  </div>
+
+  <!-- ✅ Main Content -->
+  <div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <h3>Dashboard</h3>
+      <div class="admin-name">
+        <i class="bi bi-person-circle"></i> Admin
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="card-box">
+      <h4 class="fw-bold mb-3">Welcome Admin 👋</h4>
+      <p class="text-muted">
+        Use the navigation menu to manage advocates, courts, users, blockchain transactions,
+        and handle complaints/feedback efficiently.
+      </p>
+
+      <div class="row mt-4 g-3">
+        <div class="col-md-4">
+          <div class="p-3 rounded-3 bg-light">
+            <h6 class="fw-bold mb-1">Advocate Requests</h6>
+            <small class="text-muted">Pending advocate registrations approval</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 rounded-3 bg-light">
+            <h6 class="fw-bold mb-1">Blockchain Logs</h6>
+            <small class="text-muted">Monitor transaction validation records</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 rounded-3 bg-light">
+            <h6 class="fw-bold mb-1">Complaints & Feedback</h6>
+            <small class="text-muted">Reply to complaints & review feedbacks</small>
+          </div>
+        </div>
+        <!--<div class="col-md-4">-->
+          <!--<div class="p-3 rounded-3 bg-primary text-white shadow-sm">-->
+            <!--<h6 class="fw-bold mb-1"><i class="bi bi-box-seam me-2"></i>Current Block</h6>-->
+            <!--<div class="h3 fw-bold mb-0">{{ current_block|default:"0" }}</div>-->
+            <!--<small class="opacity-75">Live Network Height</small>-->
+          <!--</div>-->
+        <!--</div>-->
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

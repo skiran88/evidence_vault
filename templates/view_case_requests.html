@@ -1,0 +1,189 @@
+{% include 'advocate_dashboard.html' %}
+
+<style>
+
+.page-wrapper{
+margin-left:280px;
+padding:30px;
+}
+
+/* ✅ Proper centering */
+.page-title,
+.page-subtitle,
+.case-card{
+max-width:1100px;
+margin:0 auto;
+}
+
+.page-title{
+font-weight:700;
+color:#2c3e50;
+margin-bottom:5px;
+}
+
+.page-subtitle{
+color:#6c757d;
+margin-bottom:25px;
+}
+
+.case-card{
+background:white;
+border-radius:14px;
+padding:25px;
+box-shadow:0 6px 25px rgba(0,0,0,0.08);
+width:100%;
+}
+
+.table thead th{
+background:#37517e;
+color:white;
+font-weight:600;
+}
+
+.btn-approve{
+background:#47b2e4;
+border:none;
+color:white;
+border-radius:8px;
+padding:6px 14px;
+font-weight:600;
+}
+
+.btn-approve:hover{
+background:#209dd8;
+}
+
+.btn-reject{
+background:#ff4d4d;
+border:none;
+color:white;
+border-radius:8px;
+padding:6px 14px;
+font-weight:600;
+}
+
+.btn-reject:hover{
+background:#e63939;
+}
+
+</style>
+
+
+<div class="page-wrapper">
+
+<h3 class="page-title">Case Requests</h3>
+
+<p class="page-subtitle">
+Review legal case requests submitted by users.
+</p>
+
+<div class="case-card">
+
+<div class="table-responsive">
+
+<table class="table table-bordered align-middle">
+
+<thead>
+<tr>
+    <th>#</th>
+    <th>Case</th>
+    <th>Category</th>
+    <th>Description</th>
+    <th>Evidence</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for case in cases %}
+
+<tr>
+
+    <td>{{ forloop.counter }}</td>
+
+    <td><strong class="text-primary">{{ case.case_title }}</strong></td>
+
+    <td>{{ case.category.category_name }}</td>
+
+    <td>
+        <span class="text-muted small">
+            {{ case.description|truncatechars:50 }}
+        </span>
+    </td>
+
+    <td>
+        {% if case.evidence_file %}
+        <a href="{{ case.evidence_file.url }}" target="_blank" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-file-earmark-text"></i> View
+        </a>
+        {% else %}
+        <span class="text-muted small">No File</span>
+        {% endif %}
+    </td>
+
+    <td>
+        {% if case.status == "Pending" %}
+            <span class="badge bg-warning text-dark">Pending Review</span>
+        {% elif case.status == "Approved" or case.status == "Case Assigned To Court" or case.status == "Court Accepted" or case.status == "Under Trial" %}
+            <span class="badge bg-success">Active Case</span>
+            <div class="small text-muted mt-1" style="font-size: 10px;">{{ case.status }}</div>
+        {% elif case.status == "Case Disposed" %}
+            <span class="badge bg-secondary">Disposed</span>
+        {% else %}
+            <span class="badge bg-danger">Rejected</span>
+        {% endif %}
+    </td>
+
+    <td>
+        {% if case.status == "Pending" %}
+        <div class="d-flex gap-2">
+            <a href="{% url 'case_action' case.id 'approve' %}" class="btn btn-approve btn-sm">
+                Approve
+            </a>
+            <a href="{% url 'case_action' case.id 'reject' %}" class="btn btn-reject btn-sm">
+                Reject
+            </a>
+        </div>
+        {% elif case.status == "Approved" %}
+            <span class="text-success small fw-bold">Ready for Court</span>
+        {% else %}
+            <span class="text-muted small">{{ case.status }}</span>
+        {% endif %}
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ✅ SECOND TABLE -->
+<div id="caseTable" class="case-card">
+
+<div class="table-responsive">
+
+<table class="table table-bordered align-middle">
+
+<!-- table content -->
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+window.onload = function() {
+    document.getElementById("caseTable").scrollIntoView({ behavior: "smooth" });
+};
+</script>

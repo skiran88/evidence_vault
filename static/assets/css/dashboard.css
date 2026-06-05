@@ -1,0 +1,48 @@
+.dashboard-nav{
+background:#37517e;
+padding:15px 0;
+box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+.navbar-brand{
+font-family:"Jost",sans-serif;
+font-size:22px;
+font-weight:700;
+color:white;
+}
+
+.navbar-icons i{
+color:white;
+font-size:20px;
+margin-left:20px;
+cursor:pointer;
+}
+
+.logout-btn{
+background:#ff4d4d;
+color:white;
+padding:6px 14px;
+border-radius:6px;
+text-decoration:none;
+margin-left:20px;
+}
+
+.logout-btn:hover{
+background:#e63939;
+color:white;
+}
+.back-link{
+color:white;
+text-decoration:none;
+font-weight:500;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.back-link:hover{
+opacity:0.8;
+}
+.footer-newsletter{
+  margin-top: 60px; /* adjust 40–100px as you like */
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EvidenceVault | Court Dashboard</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+
+body{
+font-family:"Open Sans",sans-serif;
+background:#f4f7fc;
+}
+
+/* Navbar */
+
+.dashboard-nav{
+background:#37517e;
+padding:15px 0;
+box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+.navbar-brand{
+font-family:"Jost",sans-serif;
+font-size:22px;
+font-weight:700;
+color:white;
+}
+
+.navbar-icons i{
+color:white;
+font-size:20px;
+margin-left:20px;
+cursor:pointer;
+}
+
+/* Welcome Section */
+
+.welcome-box{
+background:linear-gradient(120deg,#37517e,#47b2e4);
+color:white;
+padding:40px;
+border-radius:14px;
+margin-top:25px;
+}
+
+.welcome-box h2{
+font-family:"Jost",sans-serif;
+font-weight:700;
+}
+
+/* Feature Cards */
+
+.feature-card{
+background:#1e293b;
+padding:30px;
+border-radius:14px;
+box-shadow:0 5px 20px rgba(0,0,0,0.25);
+text-align:center;
+transition:0.3s;
+height:100%;
+color:#e2e8f0;
+}
+
+.feature-card:hover{
+transform:translateY(-6px);
+box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+
+.feature-card i{
+font-size:40px;
+color:#38bdf8;
+margin-bottom:15px;
+}
+
+.feature-card h5{
+font-weight:700;
+margin-bottom:8px;
+color:#f1f5f9;
+}
+
+.feature-card p{
+font-size:14px;
+color:#94a3b8;
+margin-bottom:0;
+}
+
+/* Logout button */
+
+.logout-btn{
+background:#ff4d4d;
+color:white;
+padding:6px 14px;
+border-radius:6px;
+text-decoration:none;
+margin-left:20px;
+}
+
+.logout-btn:hover{
+background:#e63939;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<nav class="navbar dashboard-nav">
+
+<div class="container-fluid px-4">
+
+<a class="navbar-brand">
+EvidenceVault
+</a>
+
+<div class="navbar-icons">
+
+<i class="bi bi-bell"></i>
+
+<i class="bi bi-person-circle"></i>
+
+<a href="{% url 'home' %}" class="logout-btn">Logout</a>
+
+</div>
+
+</div>
+
+</nav>
+
+
+<div class="container">
+
+<!-- Welcome Section -->
+
+<div class="welcome-box">
+
+<h2>Welcome Court 👩‍⚖️</h2>
+
+<p>
+View blockchain-secured case details, update hearing schedules,
+manage case status, and send notifications to users efficiently.
+</p>
+
+</div>
+
+
+<!-- Feature Grid -->
+
+<div class="row g-4 mt-3">
+
+
+<!-- Blockchain Case Details -->
+
+<div class="col-lg-4 col-md-6">
+
+<a href="/view_blockchain_cases" style="text-decoration:none;">
+
+<div class="feature-card">
+
+<i class="bi bi-diagram-3"></i>
+
+<h5>Blockchain Cases</h5>
+
+<p>View secure case details and evidence</p>
+
+</div>
+
+</a>
+
+</div>
+
+
+<!-- Update Hearing -->
+
+<div class="col-lg-4 col-md-6">
+
+<a href="/update_hearing_schedule" style="text-decoration:none;">
+
+<div class="feature-card">
+
+<i class="bi bi-calendar-event"></i>
+
+<h5>Hearing Schedule</h5>
+
+<p>Update court hearing dates</p>
+
+</div>
+
+</a>
+
+</div>
+
+
+<!-- Update Case Status -->
+
+<!--<div class="col-lg-4 col-md-6">-->
+
+<!--<a href="/update_case_status" style="text-decoration:none;">-->
+
+<!--<div class="feature-card">-->
+
+<!--<i class="bi bi-check2-circle"></i>-->
+
+<!--<h5>Case Status</h5>-->
+
+<!--<p>Update progress of cases</p>-->
+
+<!--</div>-->
+
+<!--</a>-->
+
+<!--</div>-->
+
+
+<!-- Send Notifications -->
+
+<div class="col-lg-4 col-md-6">
+
+<a href="/court_will_assign_case" style="text-decoration:none;">
+
+<div class="feature-card">
+
+<i class="bi bi-folder2-open"></i>
+
+<h5>Assign cases</h5>
+
+<p>Notify users about hearings and updates</p>
+
+</div>
+
+</a>
+
+</div>
+
+
+<!--&lt;!&ndash; View Assigned Cases &ndash;&gt;-->
+
+<!--<div class="col-lg-4 col-md-6">-->
+
+<!--<a href="/view_court_cases" style="text-decoration:none;">-->
+
+<!--<div class="feature-card">-->
+
+<!--<i class="bi bi-folder2-open"></i>-->
+
+<!--<h5>Court Cases</h5>-->
+
+<!--<p>View cases under this court</p>-->
+
+<!--</div>-->
+
+<!--</a>-->
+
+<!--</div>-->
+
+
+<!--&lt;!&ndash; Evidence Verification &ndash;&gt;-->
+
+<!--<div class="col-lg-4 col-md-6">-->
+
+<!--<a href="/verify_evidence" style="text-decoration:none;">-->
+
+<!--<div class="feature-card">-->
+
+<!--<i class="bi bi-shield-check"></i>-->
+
+<!--<h5>Verify Evidence</h5>-->
+
+<!--<p>Validate blockchain evidence authenticity</p>-->
+
+<!--</div>-->
+
+<!--</a>-->
+
+<!--</div>-->
+
+
+</div>
+
+</div>
+
+
+<script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

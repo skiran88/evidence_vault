@@ -1,0 +1,143 @@
+{% include 'admin_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .badge-role {
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .user-role {
+    background: #dbeafe;
+    color: #1e3a8a;
+  }
+
+  .advocate-role {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .btn-view {
+    background: #38bdf8;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+
+  .btn-view:hover {
+    background: #0ea5e9;
+  }
+
+  .btn-delete {
+    background: #ef4444;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+
+  .btn-delete:hover {
+    background: #dc2626;
+  }
+</style>
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">User & Advocate Accounts</h2>
+  <p class="page-subtitle">
+    Admin can view and manage all registered users and advocates in the system.
+  </p>
+
+  <div class="custom-card">
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Registered Date</th>
+            <th style="width:180px;">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+{% for u in users %}
+
+<tr>
+  <td>{{ forloop.counter }}</td>
+  <td>{{ u.fullname }}</td>
+  <td>{{ u.email }}</td>
+  <td>{{ u.phone }}</td>
+
+  <td>
+    <span class="badge-role user-role">User</span>
+  </td>
+
+  <td>{{ u.user_id.date_joined|date:"d M Y" }}</td>
+
+  <td>
+    <a href="{% url 'delete_user' u.id %}" class="btn btn-delete btn-sm">
+      Delete
+    </a>
+  </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+      </table>
+    </div>
+
+    <small class="text-muted">
+      * Replace example rows with database data using Django template loops.
+    </small>
+
+  </div>
+
+</div>

@@ -1,0 +1,184 @@
+{% if is_court %}
+  {% include 'court_dashboard.html' %}
+{% else %}
+  {% include 'advocate_dashboard.html' %}
+{% endif %}
+
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .hash {
+    font-family: monospace;
+    font-size: 13px;
+    word-break: break-all;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 8px;
+  }
+
+  .verified {
+    background: #dcfce7;
+    color: #166534;
+  }
+</style>
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">Blockchain Case Assignment</h2>
+  <p class="page-subtitle">
+    View tamper-proof evidence records and assign approved advocates to cases.
+  </p>
+
+  <div class="custom-card">
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Case ID</th>
+            <th>Title & Category</th>
+            <th>Description</th>
+            <th>Digital Evidence Hash</th>
+            <th>Evidence</th>
+            <th>Action / Assign Advocate</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for case in cases %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <strong>CASE{{ case.id }}</strong><br>
+              <small class="text-muted">{{ case.created_at|date:"d M Y" }}</small>
+            </td>
+            <td>
+                <strong>{{ case.case_title }}</strong><br>
+                <span class="badge bg-light text-primary" style="font-size: 11px; border: 1px solid #cbd5e1;">{{ case.category.category_name }}</span>
+            </td>
+            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                {{ case.description }}
+            </td>
+            <td class="hash">
+              {% if case.blockchain_txn_hash %}
+                <span class="status-badge verified mb-1 d-inline-block">Verified on Chain</span><br>
+                {{ case.blockchain_txn_hash|truncatechars:30 }}
+              {% else %}
+                <span class="badge bg-warning text-dark mb-1 d-inline-block">Pending Seal</span><br>
+                <small class="text-muted">Not yet on chain</small>
+              {% endif %}
+            </td>
+            <td>
+                {% if case.evidence_file %}
+                <a href="{{ case.evidence_file.url }}" target="_blank" class="btn btn-outline-info btn-sm">
+                    <i class="bi bi-file-earmark-text"></i> View
+                </a>
+                {% else %}
+                <span class="text-muted small">No File</span>
+                {% endif %}
+            </td>
+            <td>
+              {% if is_court %}
+                {% if case.status == "Case Assigned To Court" %}
+                  <div class="d-flex gap-2 mb-3">
+                    <a href="{% url 'court_case_action' case.id 'accept' %}" class="btn btn-success btn-sm w-50">
+                      <i class="bi bi-check-lg"></i> Accept
+                    </a>
+                    <a href="{% url 'court_case_action' case.id 'reject' %}" class="btn btn-danger btn-sm w-50">
+                      <i class="bi bi-x-lg"></i> Reject
+                    </a>
+                  </div>
+                {% elif case.status == "Court Accepted" %}
+                  <div class="badge bg-success mb-3 p-2 w-100">
+                    <i class="bi bi-check-circle-fill me-1"></i> Accepted by Court
+                  </div>
+                {% elif case.status == "Court Rejected" %}
+                  <div class="badge bg-danger mb-3 p-2 w-100">
+                    <i class="bi bi-slash-circle-fill me-1"></i> Rejected by Court
+                  </div>
+                {% endif %}
+
+                {% if case.advocate %}
+                  <div class="d-flex align-items-center text-primary fw-bold small p-2 border rounded bg-light">
+                    <i class="bi bi-person-check-fill me-2"></i>
+                    Advocate: {{ case.advocate.first_name }}
+                  </div>
+                {% else %}
+                  <form method="POST" action="{% url 'court_assign_advocate' case.id %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                      <select name="advocate_id" class="form-select form-select-sm" required>
+                        <option value="">Assign Advocate</option>
+                        {% for adv in advocates %}
+                          <option value="{{ adv.id }}">{{ adv.first_name }} {{ adv.last_name }}</option>
+                        {% endfor %}
+                      </select>
+                      <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+                    </div>
+                  </form>
+                {% endif %}
+              {% else %}
+                {# Advocate View - Read Only Status #}
+                <div class="badge {% if case.status == 'Court Accepted' %}bg-success{% elif case.status == 'Court Rejected' %}bg-danger{% else %}bg-secondary{% endif %} p-2 w-100 mb-2">
+                  {{ case.status }}
+                </div>
+                {% if case.court %}
+                  <div class="small text-muted border-top pt-2">
+                    <i class="bi bi-bank me-1"></i> {{ case.court.court_name }}
+                  </div>
+                {% endif %}
+              {% endif %}
+            </td>
+
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">No blockchain transactions found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

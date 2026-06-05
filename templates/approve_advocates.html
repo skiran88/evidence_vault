@@ -1,0 +1,161 @@
+{% include 'admin_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .btn-approve {
+    background: #22c55e;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+
+  .btn-approve:hover {
+    background: #16a34a;
+  }
+
+  .btn-reject {
+    background: #ef4444;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+
+  .btn-reject:hover {
+    background: #dc2626;
+  }
+
+  .btn-view {
+    background: #38bdf8;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+
+  .btn-view:hover {
+    background: #0ea5e9;
+  }
+</style>
+
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">Approve Advocate Registrations</h2>
+  <p class="page-subtitle">
+    Admin can review advocate applications and approve or reject registrations.
+  </p>
+
+  <div class="custom-card">
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Experience</th>
+            <th>Proof Document</th>
+            <th>Status</th>
+            <th style="width:180px;">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+{% for adv in advocates %}
+
+<tr>
+  <td>{{ forloop.counter }}</td>
+  <td>{{ adv.name }}</td>
+  <td>{{ adv.phone }}</td>
+  <td>{{ adv.email }}</td>
+  <td>{{ adv.experience_years }} Years</td>
+
+  <td>
+    <a href="{{ adv.proof_document.url }}" target="_blank" class="btn btn-view btn-sm">
+      View
+    </a>
+  </td>
+
+  <td>
+
+    {% if adv.status == "Pending" %}
+      <span class="badge bg-warning text-dark">Pending</span>
+    {% elif adv.status == "Approved" %}
+      <span class="badge bg-success">Approved</span>
+    {% else %}
+      <span class="badge bg-danger">Rejected</span>
+    {% endif %}
+
+  </td>
+
+ <td>
+
+<a href="{% url 'advocate_action' adv.id 'approve' %}" class="btn btn-approve btn-sm">
+Approve
+</a>
+
+<a href="{% url 'advocate_action' adv.id 'reject' %}" class="btn btn-reject btn-sm">
+Reject
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+      </table>
+    </div>
+
+    <small class="text-muted">
+      * Replace example rows with dynamic advocate data from the database.
+    </small>
+
+  </div>
+
+</div>

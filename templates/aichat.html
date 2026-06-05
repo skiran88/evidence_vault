@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvidenceVault | Legal AI Assistant</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary: #1a237e;
+            --accent: #2196f3;
+            --bg-main: #f8fafc;
+            --user-bubble: #1a237e;
+            --bot-bubble: #ffffff;
+            --glass-white: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: #1e293b;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 🏛️ Layout Containers */
+        .chat-layout {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8faff 0%, #eef2ff 100%);
+        }
+
+        /* 🛸 Header Section */
+        .header-bar {
+            background: var(--glass-white);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            z-index: 10;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 20px;
+            box-shadow: 0 8px 16px -4px rgba(26, 35, 126, 0.3);
+        }
+
+        .brand-text h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-status {
+            font-size: 11px;
+            font-weight: 700;
+            color: #22c55e;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 💬 Messages Container */
+        .messages-container {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .messages-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* 🎈 Chat Bubbles */
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .user .avatar {
+            background: rgba(26, 35, 126, 0.1);
+            color: var(--primary);
+        }
+
+        .bot .avatar {
+            background: white;
+            color: var(--accent);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .bubble {
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        .user .bubble {
+            background: var(--user-bubble);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot .bubble {
+            background: var(--bot-bubble);
+            color: #334155;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        /* 🖊️ Input Area */
+        .footer-action {
+            background: var(--glass-white);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .input-wrapper:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px -8px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            border: none;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #334155;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: #94a3b8;
+        }
+
+        button.send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 18px;
+        }
+
+        button.send-btn:hover {
+            background: #283593;
+            transform: scale(1.05);
+        }
+
+        button.send-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 📜 Custom Scrollbar */
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* 📱 Responsive Adjustments */
+        @media (max-width: 640px) {
+            .header-bar { padding: 1rem 1.25rem; }
+            .messages-container { padding: 1.25rem; }
+            .message { max-width: 92%; }
+            .footer-action { padding: 1rem 1.25rem; }
+            .input-wrapper { border-radius: 12px; }
+            input[type="text"] { padding: 10px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-layout">
+        
+        <!--&lt;!&ndash; Header &ndash;&gt;-->
+        <!--<header class="header-bar">-->
+            <!--<div class="header-brand">-->
+                <!--<div class="brand-icon">-->
+                    <!--<i class="bi bi-shield-check"></i>-->
+                <!--</div>-->
+                <!--<div class="brand-text">-->
+                    <!--<h2>Legal Assistant AI</h2>-->
+                    <!--<div class="brand-status">-->
+                        <!--<div class="status-dot"></div>-->
+                        <!--Systems Active-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<a href="{% url 'user_dashboard' %}" style="text-decoration: none; color: #64748b; font-size: 20px;">-->
+                <!--<i class="bi bi-x-lg"></i>-->
+            <!--</a>-->
+        <!--</header>-->
+
+        <!-- Messages -->
+        <main class="messages-container" id="chatWindow">
+            <div class="messages-inner">
+                
+                <!-- Initial Bot Message -->
+                <div class="message bot">
+                    <div class="avatar"><i class="bi bi-robot"></i></div>
+                    <div class="bubble">
+                        Hello! I am your EvidenceVault Legal Assistant. How can I help you today? You can ask about Women's Rights, Safety Laws, or Workplace protections.
+                    </div>
+                </div>
+
+                {% if user_message %}
+                <!-- History: User -->
+                <div class="message user">
+                    <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                    <div class="bubble">
+                        {{ user_message }}
+                    </div>
+                </div>
+
+                <!-- History: Bot -->
+                <div class="message bot">
+                    <div class="avatar"><i class="bi bi-robot"></i></div>
+                    <div class="bubble">
+                        {{ response|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </main>
+
+        <!-- Footer Input -->
+        <footer class="footer-action">
+            <form method="post" action="{% url 'chat' %}">
+                {% csrf_token %}
+                <div class="input-wrapper">
+                    <input type="text" name="message" id="messageInput" placeholder="Enter your legal inquiry..." required autocomplete="off">
+                    <button type="submit" class="send-btn">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </form>
+        </footer>
+
+    </div>
+
+    <script>
+        // Scroll to bottom on load
+        window.onload = function() {
+            var chatWindow = document.getElementById('chatWindow');
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            document.getElementById('messageInput').focus();
+        };
+    </script>
+
+</body>
+</html>

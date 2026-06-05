@@ -1,0 +1,138 @@
+{% include 'admin_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 280px;
+    padding: 25px;
+  }
+
+  @media (max-width: 992px) {
+    .page-wrapper {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+
+  .table thead th {
+    background: #f3f6ff;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .btn-reply {
+    background: #38bdf8;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-weight: 600;
+  }
+
+  .btn-reply:hover {
+    background: #0ea5e9;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+
+  .pending {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+
+  .resolved {
+    background: #dcfce7;
+    color: #166534;
+  }
+</style>
+
+<div class="page-wrapper">
+
+  <h2 class="page-title">User Complaints</h2>
+  <p class="page-subtitle">
+    Admin can view complaints submitted by users and send responses.
+  </p>
+
+  <div class="custom-card">
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Complaint</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th style="width:160px;">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- Example Complaint -->
+          <tr>
+            <td>1</td>
+            <td>Rahul Nair</td>
+            <td>rahul@gmail.com</td>
+            <td>Unable to upload evidence file.</td>
+            <td>10 Mar 2026</td>
+
+            <td>
+              <span class="status-badge pending">Pending</span>
+            </td>
+
+            <td>
+              <button class="btn btn-reply btn-sm">Reply</button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>2</td>
+            <td>Anjali Menon</td>
+            <td>anjali@gmail.com</td>
+            <td>Advocate not responding to case request.</td>
+            <td>11 Mar 2026</td>
+
+            <td>
+              <span class="status-badge resolved">Replied</span>
+            </td>
+
+            <td>
+              <button class="btn btn-reply btn-sm">View Reply</button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <small class="text-muted">
+      * Replace example rows with complaints fetched from the database.
+    </small>
+
+  </div>
+
+</div>

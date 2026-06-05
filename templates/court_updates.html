@@ -1,0 +1,166 @@
+{% include 'advocate_dashboard.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 0; /* Since advocate_dashboard doesn't have a sidebar, we don't need margin */
+    padding: 25px;
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+  }
+
+  .status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    text-transform: uppercase;
+  }
+
+  /* Status Colors */
+  .status-pending { background: #fef3c7; color: #92400e; }
+  .status-approved { background: #dcfce7; color: #166534; }
+  .status-trial { background: #dbeafe; color: #1e40af; }
+  .status-verdict { background: #f3e8ff; color: #6b21a8; }
+  .status-disposed { background: #f1f5f9; color: #334155; }
+
+  .hearing-timeline {
+    border-left: 2px solid #e2e8f0;
+    padding-left: 20px;
+    position: relative;
+    margin-left: 10px;
+  }
+
+  .timeline-item {
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -26px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    background: #37517e;
+    border-radius: 50%;
+  }
+
+  .timeline-date {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 13px;
+  }
+
+  .timeline-content {
+    font-size: 13px;
+    color: #475569;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 5px;
+  }
+</style>
+
+<div class="container container-fluid mb-5">
+  <div class="page-wrapper">
+    <h2 class="page-title mt-4">Court Updates & Hearing Schedules</h2>
+    <p class="page-subtitle">Track the status of your assigned cases and monitor court proceedings.</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="row g-4">
+      {% for case in cases %}
+      <div class="col-12">
+        <div class="custom-card">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h5 class="fw-bold mb-1">CASE{{ case.id }}: {{ case.case_title }}</h5>
+              <div class="text-muted small">
+                <i class="bi bi-tag-fill me-1"></i> {{ case.category.category_name }} | 
+                <i class="bi bi-calendar3 me-1"></i> Opened on {{ case.created_at|date:"d M Y" }}
+              </div>
+            </div>
+            <div>
+              <span class="status-badge 
+                {% if case.status == 'Approved' or case.status == 'Court Accepted' %}status-approved
+                {% elif case.status == 'Under Trial' %}status-trial
+                {% elif case.status == 'Awaiting Verdict' %}status-verdict
+                {% elif case.status == 'Case Disposed' %}status-disposed
+                {% else %}status-pending{% endif %}">
+                {{ case.status }}
+              </span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-7">
+              <p class="text-muted small mb-3">
+                {{ case.description|truncatewords:50 }}
+              </p>
+              
+              <div class="p-3 bg-light rounded border">
+                <div class="fw-bold small text-primary mb-2">Court Details</div>
+                <div class="small mb-1"><strong>Location:</strong> {{ case.court_location }}</div>
+                {% if case.court %}
+                  <div class="small"><strong>Assigned Court:</strong> {{ case.court.court_name }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <h6 class="fw-bold small text-uppercase text-muted mb-3">Hearing Timeline</h6>
+              <div class="hearing-timeline">
+                {% for hearing in case.courthearing_set.all|dictsortreversed:"hearing_date" %}
+                <div class="timeline-item">
+                  <div class="timeline-date">{{ hearing.hearing_date|date:"d M Y" }}</div>
+                  <div class="timeline-content">
+                    {% if hearing.verdict %}
+                      <div class="fw-bold text-dark">Verdict: {{ hearing.verdict }}</div>
+                    {% endif %}
+                    {% if hearing.notes %}
+                      <div class="text-muted">{{ hearing.notes }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% empty %}
+                <div class="text-muted small">No hearings scheduled yet.</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-folder-x text-muted" style="font-size: 50px;"></i>
+        <h5 class="mt-3 text-muted">No assigned cases to track.</h5>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

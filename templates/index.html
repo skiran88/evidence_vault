@@ -1,0 +1,64 @@
+{% include 'publicheader.html' %}
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
+            <h1>Lock evidence and prevent tampering</h1>
+            <div class="d-flex">
+              <a href="{% url 'user_dashboard' %}" class="btn-get-started">Get Started</a>
+              <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+            </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="200">
+            <img src="/static/assets/img/logo.png" class="img-fluid animated" alt="">
+          </div>
+        </div>
+      </div>
+
+    </section><!-- /Hero Section -->
+
+
+
+    <!-- About Section -->
+<section id="about" class="about section">
+
+  <div class="container">
+
+    <div class="section-title text-center">
+      <h2>About Us</h2>
+      <p>Secure. Transparent. Reliable.</p>
+    </div>
+
+    <div class="row content">
+
+      <div class="col-lg-6">
+        <p>
+          EvidenceVault is a modern digital platform designed to securely store and manage legal case evidence.
+          Our system ensures that sensitive data remains tamper-proof using advanced blockchain technology.
+        </p>
+        <ul>
+          <li><i class="bi bi-check2-circle"></i> Secure evidence storage</li>
+          <li><i class="bi bi-check2-circle"></i> Blockchain-based verification</li>
+          <li><i class="bi bi-check2-circle"></i> Easy case tracking</li>
+        </ul>
+      </div>
+
+      <div class="col-lg-6 pt-4 pt-lg-0">
+        <p>
+          Our platform connects users, advocates, and courts in one unified system.
+          It improves transparency in legal processes and ensures that evidence is always authentic and accessible.
+        </p>
+        <a href="/register" class="btn btn-primary">Get Started</a>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+ {% include 'publicfooter.html' %}

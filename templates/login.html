@@ -1,0 +1,282 @@
+{% include 'publicheader.html' %}
+
+<style>
+  /* Same page feel like EvidenceVault Home (Arsha hero UI) */
+  .auth-hero {
+    min-height: 100vh;
+    padding: 140px 0 80px; /* because header is fixed */
+    background: #37517e;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 30, 60, 0.15), rgba(0, 0, 0, 0.25));
+    z-index: 1;
+  }
+
+  .auth-shape {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    filter: blur(45px);
+    opacity: 0.24;
+    z-index: 1;
+  }
+
+  .auth-shape.one {
+    top: -160px;
+    left: -160px;
+    background: #47b2e4;
+  }
+
+  .auth-shape.two {
+    bottom: -200px;
+    right: -170px;
+    background: #ffffff;
+  }
+
+  .auth-wrap {
+    position: relative;
+    z-index: 2;
+  }
+
+  .auth-title {
+    color: #fff;
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+
+  .auth-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 26px;
+    max-width: 520px;
+  }
+
+  /* Glass card like modern hero forms */
+  .login-container {
+    width: 100%;
+    max-width: 450px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 14px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 45px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .login-inner {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+  }
+
+  .logo {
+    text-align: left;
+    margin-bottom: 18px;
+  }
+
+  .logo h1 {
+    color: #2c3e50;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .logo p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .input-group {
+    margin-bottom: 14px;
+  }
+
+  label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 650;
+    color: #2c3e50;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #e6e9f2;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s ease;
+    background: #fff;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #47b2e4;
+    box-shadow: 0 0 0 0.18rem rgba(71, 178, 228, 0.18);
+  }
+
+  .forgot {
+    text-align: right;
+    margin-bottom: 16px;
+  }
+
+  .forgot a {
+    font-size: 13px;
+    text-decoration: none;
+    color: #47b2e4;
+    font-weight: 700;
+  }
+
+  .forgot a:hover {
+    text-decoration: underline;
+  }
+
+  .btn-login {
+    width: 100%;
+    background: #47b2e4;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .btn-login:hover {
+    background: #2fa6db;
+  }
+
+  .divider {
+    margin: 18px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+    user-select: none;
+  }
+
+  .signup {
+    text-align: center;
+    font-size: 14px;
+    color: #475569;
+  }
+
+  .signup a {
+    color: #47b2e4;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .signup a:hover {
+    text-decoration: underline;
+  }
+
+  .note {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  /* responsive */
+  @media (max-width: 991px) {
+    .auth-title {
+      font-size: 30px;
+    }
+    .login-inner {
+      padding: 26px;
+    }
+  }
+</style>
+
+<main class="main">
+  <section class="auth-hero">
+    <div class="auth-shape one"></div>
+    <div class="auth-shape two"></div>
+
+    <div class="container auth-wrap" data-aos="fade-up">
+      <div class="row align-items-center gy-4">
+
+        <!-- LEFT HERO TEXT (matches your home UI layout) -->
+        <div class="col-lg-6">
+          <h1 class="auth-title">Welcome Back</h1>
+          <p class="auth-subtitle">
+            Login to <b>EvidenceVault</b> to access secure case management and tamper-proof evidence storage.
+            Choose your role and continue.
+          </p>
+
+          <div class="d-flex gap-3 flex-wrap">
+            <a href="/" class="btn btn-light px-4 py-2 rounded-pill fw-bold">
+              <i class="bi bi-house-door me-1"></i> Back to Home
+            </a>
+            <a href="/user_register" class="btn btn-outline-light px-4 py-2 rounded-pill fw-bold">
+              <i class="bi bi-person-plus me-1"></i> Register
+            </a>
+          </div>
+        </div>
+
+        <!-- RIGHT LOGIN CARD -->
+        <div class="col-lg-5 offset-lg-1">
+          <div class="login-container">
+            <div class="login-inner">
+
+              <div class="logo">
+                <h1>EvidenceVault</h1>
+                <p>Lock Evidence. Prevent Tampering.</p>
+              </div>
+
+              <!-- ✅ SAME CONTENT (not changed) -->
+              <form action="#" method="POST">
+                 {% csrf_token %}
+
+                <!-- Email -->
+                <div class="input-group">
+                  <label>Email</label>
+                 <input type="text" name="identifier" placeholder="Username or Email">
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                  <label>Password</label>
+                  <input type="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="forgot">
+                  <a href="#">Forgot Password?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="btn-login">Login</button>
+
+                <div class="divider">──────── or ────────</div>
+
+                <p class="note">
+                  * Admin access is restricted and monitored.
+                </p>
+
+              </form>
+              <!-- ✅ SAME CONTENT END -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+{% include 'publicfooter.html' %}

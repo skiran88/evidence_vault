@@ -1,0 +1,277 @@
+<!--{% include 'advocate_dashboard.html' %}-->
+
+<!--<style>-->
+  <!--.page-wrapper {-->
+    <!--margin-left: 280px;-->
+    <!--padding: 30px;-->
+  <!--}-->
+
+  <!--.case-card {-->
+    <!--background: white;-->
+    <!--border-radius: 14px;-->
+    <!--padding: 25px;-->
+    <!--box-shadow: 0 6px 25px rgba(0,0,0,0.08);-->
+    <!--margin-bottom: 20px;-->
+  <!--}-->
+
+  <!--.status-badge {-->
+    <!--padding: 5px 12px;-->
+    <!--border-radius: 8px;-->
+    <!--font-size: 11px;-->
+    <!--font-weight: 700;-->
+    <!--text-transform: uppercase;-->
+  <!--}-->
+
+  <!--.btn-accept {-->
+    <!--background: #28a745;-->
+    <!--color: white;-->
+    <!--font-weight: 600;-->
+    <!--border: none;-->
+    <!--padding: 8px 20px;-->
+    <!--border-radius: 8px;-->
+  <!--}-->
+
+  <!--.btn-accept:hover {-->
+    <!--background: #218838;-->
+    <!--color: white;-->
+  <!--}-->
+
+  <!--.btn-reject {-->
+    <!--background: #dc3545;-->
+    <!--color: white;-->
+    <!--font-weight: 600;-->
+    <!--border: none;-->
+    <!--padding: 8px 20px;-->
+    <!--border-radius: 8px;-->
+  <!--}-->
+
+  <!--.btn-reject:hover {-->
+    <!--background: #c82333;-->
+    <!--color: white;-->
+  <!--}-->
+<!--</style>-->
+
+<!--<div class="page-wrapper">-->
+  <!--<div class="container-fluid">-->
+    <!---->
+    <!--<div class="d-flex justify-content-between align-items-center mb-4">-->
+      <!--<div>-->
+        <!--<h3 class="fw-bold text-dark mb-1">Judicial Case Assignments</h3>-->
+        <!--<p class="text-muted">Review and respond to cases formally assigned to you by the court.</p>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--&lt;!&ndash; Message Alerts &ndash;&gt;-->
+    <!--{% if messages %}-->
+      <!--{% for message in messages %}-->
+        <!--<div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">-->
+          <!--{{ message }}-->
+          <!--<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+        <!--</div>-->
+      <!--{% endfor %}-->
+    <!--{% endif %}-->
+
+    <!--<div class="row">-->
+      <!--{% for case in cases %}-->
+      <!--<div class="col-12">-->
+        <!--<div class="case-card border-start border-primary border-4">-->
+          <!--<div class="row align-items-center">-->
+            <!---->
+            <!--&lt;!&ndash; Case Info &ndash;&gt;-->
+            <!--<div class="col-md-7">-->
+              <!--<h5 class="fw-bold text-primary mb-2">CASE #{{ case.id }}: {{ case.case_title }}</h5>-->
+              <!--<div class="mb-3">-->
+                <!--<span class="badge bg-light text-dark border me-2"><i class="bi bi-bank2 me-1"></i> COURT: {{ case.court.court_name }}</span>-->
+                <!--<span class="badge bg-light text-dark border"><i class="bi bi-geo-alt me-1"></i> {{ case.court_location }}</span>-->
+              <!--</div>-->
+              <!--<p class="text-muted small mb-0">{{ case.description|truncatewords:40 }}</p>-->
+            <!--</div>-->
+
+            <!--&lt;!&ndash; Case File &ndash;&gt;-->
+            <!--<div class="col-md-2 text-center">-->
+              <!--{% if case.evidence_file %}-->
+              <!--<a href="{{ case.evidence_file.url }}" target="_blank" class="btn btn-outline-info btn-sm rounded-pill px-3">-->
+                <!--<i class="bi bi-file-earmark-pdf me-1"></i> View Case File-->
+              <!--</a>-->
+              <!--{% else %}-->
+              <!--<span class="text-muted small">No file attached</span>-->
+              <!--{% endif %}-->
+            <!--</div>-->
+
+            <!--&lt;!&ndash; Actions &ndash;&gt;-->
+            <!--<div class="col-md-3 text-end">-->
+              <!--{% if case.status == "Case Assigned To Advocate" %}-->
+                <!--<div class="d-flex gap-2 justify-content-end">-->
+                  <!--<a href="{% url 'advocate_court_action' case.id 'accept' %}" class="btn btn-accept btn-sm shadow-sm">-->
+                    <!--<i class="bi bi-check-lg me-1"></i> Accept-->
+                  <!--</a>-->
+                  <!--<a href="{% url 'advocate_court_action' case.id 'reject' %}" class="btn btn-reject btn-sm shadow-sm" onclick="return confirm('Are you sure you want to REJECT this court assignment?')">-->
+                    <!--<i class="bi bi-x-lg me-1"></i> Reject-->
+                  <!--</a>-->
+                <!--</div>-->
+              <!--{% elif case.status == "Court Accepted" %}-->
+                <!--<span class="badge bg-success py-2 px-3 shadow-sm">-->
+                  <!--<i class="bi bi-check-circle-fill me-1"></i> YOU ACCEPTED THIS CASE-->
+                <!--</span>-->
+              <!--{% elif case.status == "Court Rejected" %}-->
+                <!--<span class="badge bg-danger py-2 px-3 shadow-sm">-->
+                  <!--<i class="bi bi-x-circle-fill me-1"></i> YOU REJECTED THIS CASE-->
+                <!--</span>-->
+              <!--{% endif %}-->
+            <!--</div>-->
+
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--{% empty %}-->
+      <!--<div class="col-12 text-center py-5">-->
+        <!--<div class="card border-0 shadow-sm p-5 bg-white rounded-4">-->
+          <!--<i class="bi bi-folder2-open text-muted mb-3" style="font-size: 50px;"></i>-->
+          <!--<h5 class="text-muted">No pending court assignments</h5>-->
+          <!--<p class="text-muted small">New cases assigned to you by the court will appear here for review.</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--{% endfor %}-->
+    <!--</div>-->
+
+  <!--</div>-->
+<!--</div>-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EvidenceVault | Advocate Cases</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Jost" rel="stylesheet">
+<link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body{
+    font-family:"Open Sans",sans-serif;
+    background:#f4f7fc;
+}
+
+.dashboard-nav{
+    background:#37517e;
+    padding:15px;
+}
+
+.navbar-brand{
+    color:white;
+    font-weight:700;
+}
+
+.logout-btn{
+    background:red;
+    color:white;
+    padding:6px 12px;
+    border-radius:5px;
+    text-decoration:none;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    margin-top:25px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+
+
+<div class="container mt-4">
+
+<h3 class="text-center">Assigned Court Cases</h3>
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+
+<div class="card">
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Description</th>
+<th>File</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for case in cases %}
+<tr>
+
+<td>#{{ case.id }}</td>
+
+<td>{{ case.case_title }}</td>
+
+<td>{{ case.description }}</td>
+
+<td>
+{% if case.case_file %}
+<a href="{{ case.case_file.url }}" target="_blank">View</a>
+{% else %}
+No File
+{% endif %}
+</td>
+
+<td>{{ case.status }}</td>
+
+<td>
+
+{% if case.status == "Assigned" %}
+
+<a href="{% url 'accept_court_case' case.id %}" class="btn btn-success btn-sm">
+Accept
+</a>
+
+<a href="{% url 'reject_court_case' case.id %}" class="btn btn-danger btn-sm">
+Reject
+</a>
+
+{% elif case.status == "Accepted" or case.status == "Under Trial" %}
+
+<form method="POST" style="display:flex; gap:5px;">
+    {% csrf_token %}
+    <input type="hidden" name="case_id" value="{{ case.id }}">
+
+    <select name="status" class="form-select form-select-sm">
+        <option value="Accepted" {% if case.status == "Accepted" %}selected{% endif %}>Accepted</option>
+        <option value="Under Trial" {% if case.status == "Under Trial" %}selected{% endif %}>Under Trial</option>
+        <option value="Closed">Closed</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary btn-sm">
+        Update
+    </button>
+</form>
+
+{% else %}
+<span class="text-muted">Completed</span>
+{% endif %}
+
+</td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

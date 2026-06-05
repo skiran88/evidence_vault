@@ -1,0 +1,336 @@
+{% include 'user_header.html' %}
+
+<style>
+  .page-wrapper {
+    margin-left: 0;
+    padding: 25px;
+  }
+
+  .page-title {
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 6px;
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .custom-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 30px;
+  }
+
+  .status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    text-transform: uppercase;
+  }
+
+  /* Status Colors */
+  .status-pending { background: #fef3c7; color: #92400e; }
+  .status-approved { background: #dcfce7; color: #166534; }
+  .status-trial { background: #dbeafe; color: #1e40af; }
+  .status-verdict { background: #f3e8ff; color: #6b21a8; }
+  .status-disposed { background: #f1f5f9; color: #334155; }
+
+  /* Progress Stepper */
+  .progress-stepper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 40px;
+    padding: 20px 0;
+  }
+
+  .progress-stepper::before {
+    content: "";
+    position: absolute;
+    top: 45px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background: #e2e8f0;
+    z-index: 0;
+  }
+
+  .step {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    flex: 1;
+  }
+
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    background: #ffffff;
+    border: 3px solid #e2e8f0;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #94a3b8;
+    transition: all 0.4s ease;
+  }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Active/Completed States */
+  .step.completed .step-icon {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #16a34a;
+  }
+  
+  .step.active .step-icon {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #2563eb;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+    transform: scale(1.1);
+  }
+
+  .step.completed .step-label { color: #166534; }
+  .step.active .step-label { color: #1e40af; }
+
+  .hearing-timeline {
+    border-left: 2px solid #e2e8f0;
+    padding-left: 20px;
+    position: relative;
+    margin-left: 10px;
+  }
+
+  .timeline-item {
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -26px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    background: #37517e;
+    border-radius: 50%;
+  }
+
+  .timeline-date {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 13px;
+  }
+
+  .timeline-content {
+    font-size: 13px;
+    color: #475569;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 5px;
+  }
+
+  .advocate-info {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+</style>
+
+<div class="container container-fluid mb-5">
+  <div class="page-wrapper">
+    <h2 class="page-title mt-4">My Case Progress</h2>
+    <p class="page-subtitle">Track the real-time progress and hearing schedules of your submitted cases.</p>
+
+    <div class="row g-4">
+      {% for case in cases %}
+      <div class="col-12">
+        <div class="custom-card shadow-sm border-0" style="border-left: 5px solid #37517e !important;">
+          
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <div class="badge bg-primary-subtle text-primary border mb-2 px-3 py-2 rounded-pill shadow-xs" style="font-size: 11px; letter-spacing: 0.5px;">
+                <i class="bi bi-tag-fill me-1"></i> {{ case.category.category_name|upper }}
+              </div>
+              <h4 class="fw-bold text-dark mb-1">CASE #{{ case.id }}: {{ case.case_title }}</h4>
+              <div class="advocate-info d-flex align-items-center gap-3">
+                {% if case.advocate %}
+                  <span class="text-primary fw-600"><i class="bi bi-person-badge me-1"></i> ADVOCATE: {{ case.advocate.first_name }} {{ case.advocate.last_name }}</span>
+                {% else %}
+                  <span class="text-muted"><i class="bi bi-person-x me-1"></i> ASSIGNING ADVOCATE...</span>
+                {% endif %}
+                <span class="text-muted"><i class="bi bi-calendar-event me-1"></i> Submitted {{ case.created_at|date:"d M Y" }}</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <span class="status-badge shadow-sm px-4 py-2 
+                {% if case.status == 'Approved' or case.status == 'Court Accepted' %}status-approved
+                {% elif case.status == 'Under Trial' %}status-trial
+                {% elif case.status == 'Awaiting Verdict' %}status-verdict
+                {% elif case.status == 'Case Disposed' %}status-disposed
+                {% else %}status-pending{% endif %}">
+                {{ case.status }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Visual Progress Stepper -->
+          <div class="progress-stepper">
+            <!-- Step 1: Submitted -->
+            <div class="step {% if case.status == 'Pending' %}active{% else %}completed{% endif %}">
+              <div class="step-icon">
+                {% if case.status == 'Pending' %}<i class="bi bi-send-check"></i>{% else %}<i class="bi bi-check-lg"></i>{% endif %}
+              </div>
+              <div class="step-label">Submitted</div>
+            </div>
+
+            <!-- Step 2: Advocate Assigned (Approved) -->
+            <div class="step {% if case.status == 'Approved' %}active{% elif case.status != 'Pending' %}completed{% endif %}">
+              <div class="step-icon">
+                {% if case.status == 'Approved' %}<i class="bi bi-person-check"></i>{% elif case.status == 'Pending' %}<i class="bi bi-person-x"></i>{% else %}<i class="bi bi-check-lg"></i>{% endif %}
+              </div>
+              <div class="step-label">Advocate</div>
+            </div>
+
+            <!-- Step 3: Court Assigned -->
+            <div class="step {% if case.status == 'Case Assigned To Court' %}active{% elif case.status != 'Pending' and case.status != 'Approved' %}completed{% endif %}">
+              <div class="step-icon">
+                {% if case.status == 'Case Assigned To Court' %}<i class="bi bi-bank"></i>{% elif case.status == 'Pending' or case.status == 'Approved' %}<i class="bi bi-lock"></i>{% else %}<i class="bi bi-check-lg"></i>{% endif %}
+              </div>
+              <div class="step-label">Sent to Court</div>
+            </div>
+
+            <!-- Step 4: Court Accepted -->
+            <div class="step {% if case.status == 'Court Accepted' %}active{% elif case.status == 'Under Trial' or case.status == 'Awaiting Verdict' or case.status == 'Case Disposed' %}completed{% endif %}">
+              <div class="step-icon">
+                {% if case.status == 'Court Accepted' %}<i class="bi bi-check2-square"></i>{% elif case.status == 'Under Trial' or case.status == 'Awaiting Verdict' or case.status == 'Case Disposed' %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-lock"></i>{% endif %}
+              </div>
+              <div class="step-label">Accepted</div>
+            </div>
+
+            <!-- Step 5: Trial Phase -->
+            <div class="step {% if case.status == 'Under Trial' or case.status == 'Awaiting Verdict' %}active{% elif case.status == 'Case Disposed' %}completed{% endif %}">
+              <div class="step-icon">
+                {% if case.status == 'Under Trial' or case.status == 'Awaiting Verdict' %}<i class="bi bi-hammer"></i>{% elif case.status == 'Case Disposed' %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-lock"></i>{% endif %}
+              </div>
+              <div class="step-label">Trial</div>
+            </div>
+
+            <!-- Step 6: Case Disposed -->
+            <div class="step {% if case.status == 'Case Disposed' %}active{% endif %}">
+              <div class="step-icon">
+                {% if case.status == 'Case Disposed' %}<i class="bi bi-flag-fill"></i>{% else %}<i class="bi bi-lock"></i>{% endif %}
+              </div>
+              <div class="step-label">Outcome</div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-md-7">
+              <div class="p-3 bg-light rounded-4 mb-4 border border-light-subtle">
+                <div class="fw-bold small text-uppercase text-muted mb-2"><i class="bi bi-card-text me-1"></i> Case Description</div>
+                <p class="text-secondary small mb-0 lh-lg">
+                  {{ case.description }}
+                </p>
+              </div>
+
+              {% if case.blockchain_txn_hash %}
+              <div class="p-3 mb-4 rounded-4" style="background: #f0f7ff; border: 1px solid #cce3ff;">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                  <span class="fw-bold small text-primary text-uppercase"><i class="bi bi-shield-lock-fill me-1"></i> Digital Evidence Seal</span>
+                  <span class="badge bg-success shadow-xs"><i class="bi bi-patch-check-fill me-1"></i> Verified On-Chain</span>
+                </div>
+                
+                <div class="row g-3">
+                  <div class="col-12">
+                    <div class="text-muted small mb-1" style="font-size: 10px; font-weight: 700;">EVIDENCE HASH (SHA-256)</div>
+                    <code class="text-primary small p-2 bg-white rounded border d-block text-truncate shadow-xs">{{ case.evidence_hash }}</code>
+                  </div>
+                  <div class="col-12">
+                    <div class="text-muted small mb-1" style="font-size: 10px; font-weight: 700;">BLOCKCHAIN TRANSACTION ID</div>
+                    <code class="text-dark small p-2 bg-white rounded border d-block text-truncate shadow-xs">{{ case.blockchain_txn_hash }}</code>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              
+              <div class="p-4 rounded-4 shadow-xs" style="background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%); border: 1px solid #e2e8f0;">
+                <div class="fw-bold small text-primary text-uppercase mb-3"><i class="bi bi-bank2 me-1"></i> Assigned Court Info</div>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <div class="text-muted small" style="font-size: 11px;">LOCATION</div>
+                    <div class="fw-bold">{{ case.court_location|default:"TBD" }}</div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="text-muted small" style="font-size: 11px;">COURT NAME</div>
+                    <div class="fw-bold">{{ case.court.court_name|default:"Awaiting Assignment" }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <div class="p-4 h-100 bg-white rounded-4 border border-light-subtle shadow-xs">
+                <h6 class="fw-bold small text-uppercase text-muted mb-4 d-flex align-items-center">
+                  <i class="bi bi-clock-history me-2 text-primary"></i> Case Hearing Timeline
+                </h6>
+                <div class="hearing-timeline ms-2">
+                  {% for hearing in case.courthearing_set.all|dictsortreversed:"hearing_date" %}
+                  <div class="timeline-item pb-4">
+                    <div class="timeline-date d-flex justify-content-between">
+                      <span>{{ hearing.hearing_date|date:"l, d M Y" }}</span>
+                    </div>
+                    <div class="timeline-content shadow-xs border-0 mt-2" style="background: #fdfdfd; border-left: 3px solid #37517e !important;">
+                      {% if hearing.verdict %}
+                        <div class="mb-2">
+                          <span class="badge bg-primary-subtle text-primary border px-2 py-1" style="font-size: 10px;">VERDICT: {{ hearing.verdict }}</span>
+                        </div>
+                      {% endif %}
+                      {% if hearing.notes %}
+                        <div class="text-secondary small">{{ hearing.notes }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% empty %}
+                  <div class="text-center py-5 opacity-75">
+                    <i class="bi bi-calendar-x text-muted mb-3 d-block" style="font-size: 30px;"></i>
+                    <div class="text-muted small">No hearings have been scheduled yet.</div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <div class="custom-card">
+          <i class="bi bi-file-earmark-text text-muted mb-3" style="font-size: 50px; display: block;"></i>
+          <h5 class="text-muted">You haven't submitted any cases yet.</h5>
+          <a href="{% url 'submit_case_request' %}" class="btn btn-primary mt-3 btn-sm">Submit Now</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
